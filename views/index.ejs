@@ -11,14 +11,23 @@
     <div class="container">
       <fieldset>
         <form action="/" method="post">
-          <input name="city" type="text" class="ghost-input" placeholder="Enter a City" required>
-          <input type="submit" class="ghost-button" value="Get Weather">
+          <!--<input name="city" type="text" class="ghost-input" placeholder="Enter a City" required>
+          <input type="submit" class="ghost-button" value="Get Weather">-->
         </form>
-        <% if(randomWord !== null){ %>
-        <p><%= randomWord %></p>
+        <% if(randomWord1 !== null){ %>
+        <p><%= randomWord1 %></p>
         <% } %>
-        <% if(wordDefinition !== null){ %>
-        <p><%= wordDefinition %></p>
+        <% if(wordDefinition1 !== null){ %>
+        <p><%= wordDefinition1 %></p>
+        <% } %>
+        <% if(wordDefinition2 !== null){ %>
+        <p><%= wordDefinition2 %></p>
+        <% } %>
+        <% if(wordDefinition3 !== null){ %>
+        <p><%= wordDefinition3 %></p>
+        <% } %>
+        <% if(wordDefinition4 !== null){ %>
+        <p><%= wordDefinition4 %></p>
         <% } %>
         <% if(error !== null){ %>
         <p><%= error %></p>

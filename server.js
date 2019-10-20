@@ -4,98 +4,104 @@ const request = require('request');
 const _ = require('underscore');
 
 const app = express()
-
 const apiKey = 'df894a83bc985240dd3dd7a688eff987';
-
-
-
 app_id = "a06ab670"
 app_key = " 206a95585a80df582eafcd6f066ab0b0"
 language = "en-gb"
-//word_id = getRandomWord();
-//url = "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + word_id.lower()
-//r = requests.get(url, headers={"app_id":  a06ab670, "app_key":  "206a95585a80df582eafcd6f066ab0b0"})
-
-
-
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 
+
 app.get('/', function (req, res) {
-	let word_id = getRandomWord();
+  let randomWords = getRandomWords();
+  let definitions = {};
 
-	//let url = 'https://wordsapiv1.p.mashape.com/words/${randomWord}/definitions'
+  let urls = ["https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[0],
+              "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[1],
+              "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[2],
+              "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[3]
+             ];
+   options_list = []
 
+   for (i in urls) {
+     let new_option = {
+        url: urls[i],
+        headers: {
+            "app_id":  "a06ab670",
+            "app_key":  "206a95585a80df582eafcd6f066ab0b0"
+        }
+    };
+    options_list.push(new_option);
+   }
 
-  const options = {
-    url1: "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + word_id[0],
-    url2: "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + word_id[1],
-    url3: "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + word_id[2],
-    url4: "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + word_id[3],
+    let completed_requests = 0;
+    for (let i in urls) {
+     request(options_list[i], function (err, response, body) {
 
-    headers: {
-      "app_id":  "a06ab670", 
-      "app_key":  "206a95585a80df582eafcd6f066ab0b0"
-    }
-  };
+        if(err){
+          res.render('index', {
+            error: 'Error, please try again get' + err,
+            randomWord1: null,
+            wordDefinition1: null,
+            wordDefinition2: null,
+            wordDefinition3: null,
+            wordDefinition4: null,
+          });
+        } else {
+          let responseBody = JSON.parse(body)
+          //console.log(responseBody)
+          definitions[randomWords[i]] = ""+ responseBody.results[0].lexicalEntries[0].entries[0].senses[0].definitions;
+          completed_requests++;
+          console.log(definitions);
 
-  // Simon editing so we can see if we can still commit
+          console.log(completed_requests + " out of " + urls.length)
 
- request(options, function (err, response, body) {
-
-    if(err){
-      res.render('index', {
-      	error: 'Error, please try again get' + err,
-      	randomWord: null,
+          if (completed_requests == urls.length) {
+            console.log('randomWords' + randomWords);
+            console.log("get request render:");
+            res.render('index', {
+                error: null,
+                randomWord1: randomWords[0],
+                wordDefinition1: definitions[randomWords[0]],
+                wordDefinition2: definitions[randomWords[1]],
+                wordDefinition3: definitions[randomWords[2]],
+                wordDefinition4: definitions[randomWords[3]],
+         });
+         }
+        }
       });
-    } else {
-      let responseBody = JSON.parse(body)
-      console.log(responseBody)
-      let wordDefinition1 = "" +responseBody.results[0].lexicalEntries[0].entries[0].senses[0].definitions
-      console.log(word_id[0] + ": " + wordDefinition1)
 
-      res.render('index', {
-        error: null,
-        randomWord: word_id[0],
-        wordDefinition: wordDefinition1
-      //console.log("responseBody")
-      //console.log(responseBody)
-      // console.log(responseBody.results)
-      //console.log(responseBody.results[0].lexicalEntries)
-     });
+};
+  // request(options2, function (err, response, body) {
 
+  //   if(err){
+  //     res.render('index', {
+  //       error: 'Error, please try again get' + err,
+  //       randomWord2: null,
+  //       wordDefinition2: null,
+  //     });
+  //   } else {
+  //     let responseBody = JSON.parse(body)
+  //     console.log(responseBody)
+  //     let wordDefinition2 = "2nd" + responseBody.results[0].lexicalEntries[0].entries[0].senses[0].definitions
+  //     console.log(randomWords[1] + ": " + wordDefinition2)
 
-     // console.log(require('util').inspect(responseBody, true, 10));
+  //     res.render('index', {
+  //       error: null,
+  //       randomWord2: randomWords2,
+  //       wordDefinition2: wordDefinition2,
+  //    });
+  //   }
+  // });
 
-
-
-      // if(responseBody.main == undefined){
-      //   res.render('index', {
-      //   	error: 'Error, please try again get 2',
-      //   	randomWord: null,
-
-      //   });
-      // } else {
-      //   res.render('index', {
-      //   	error: null,
-      //   	//randomWord: getRandomWord(), 
-      //   	def: definitions, 
-      //   });
-      // }
-    }
-  });
-  //res.render('index', {
-  //	randomWord: getRandomWord(), 
-  //	error: null
-  //});
 
 })
 
-function getRandomWord() {
+function getRandomWords() {
   let validWords = [
-  	
+
   	'solar',
     'sustainability',
   	'hydroelectric',
@@ -109,37 +115,46 @@ function getRandomWord() {
   ];
 
   //chooses a random word from validWords with the underscore function/library
-  let randomWord = _.sample(validWords,[4]);
-  return randomWord;
+  let randomWords = _.sample(validWords,[4]);
+  return randomWords;
 }
 
 app.post('/', function (req, res) {
   //let city = req.body.city;
   //let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`
 
-  request(options, function (err, response, body) {
+  request(options_list[0], function (err, response, body) {
 
     if(err){
       console.log(err)
       res.render('index', {
       	error: 'Error, please try again post 1' + err,
-      	randomWord: null,
+      	randomWord1: null,
       });
     } else {
       let weather = JSON.parse(body)
       if(weather.main == undefined){
         res.render('index', {
         	error: 'Error, please try again post 2',
-        	randomWord: null,
+        	randomWord1: null,
+
         });
       } else {
+        console.log("post request render:");
+
         res.render('index', {
         	error: null,
-        	randomWord: getRandomWord(), 
+        	randomWord1: randomWords[0],
+            wordDefinition1: definitions[0],
+            wordDefinition2: definitions[1],
+            wordDefinition3: definitions[2],
+            wordDefinition4: definitions[3],
+
         });
       }
     }
   });
+
 })
 
 app.listen(3000, function () {
