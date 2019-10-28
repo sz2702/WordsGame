@@ -11,24 +11,48 @@
     <div class="container">
       <fieldset>
         <form action="/" method="post">
-          <input name="choice" type="text" class="ghost-input" placeholder="answer (1-4)" required>
+          <!---<input name="choice" type="text" class="ghost-input" placeholder="answer (1-4)" required>
+          <input type="submit" class="ghost-button" value="Submit">--->
+          <% if(randomWord1 !== null){ %>
+          <p><b><%= randomWord1 %></b></p>
+          <% } %>
+          <input name="choice" type="radio" value = "0"> 
+          <% if(wordDefinition1 !== null){ %>
+          <%= wordDefinition1 %>
+          <% } %>
+          <br/>
+          <input name="choice" type="radio" value = "1">
+          <% if(wordDefinition2 !== null){ %>
+          <%= wordDefinition2 %>
+          <% } %>
+          <br/>
+          <input name="choice" type="radio" value = "2">
+          <% if(wordDefinition3 !== null){ %>
+          <%= wordDefinition3 %>
+          <% } %>
+          <br/>
+          <input name="choice" type="radio" value = "3">
+          <% if(wordDefinition4 !== null){ %>
+          <%= wordDefinition4 %>
+          <% } %>
+          <br/>
           <input type="submit" class="ghost-button" value="Submit">
         </form>
-        <% if(randomWord1 !== null){ %>
-        <p><%= randomWord1 %></p>
+        <!--<% if(randomWord1 !== null){ %>
+        <p><b><%= randomWord1 %></b></p>
         <% } %>
         <% if(wordDefinition1 !== null){ %>
-        <p><%= wordDefinition1 %></p>
+        <p>1. <%= wordDefinition1 %></p>
         <% } %>
         <% if(wordDefinition2 !== null){ %>
-        <p><%= wordDefinition2 %></p>
+        <p>2. <%= wordDefinition2 %></p>
         <% } %>
         <% if(wordDefinition3 !== null){ %>
-        <p><%= wordDefinition3 %></p>
+        <p>3. <%= wordDefinition3 %></p>
         <% } %>
         <% if(wordDefinition4 !== null){ %>
-        <p><%= wordDefinition4 %></p>
-        <% } %>
+        <p>4. <%= wordDefinition4 %></p>
+        <% } %>-->
         <% if(error !== null){ %>
         <p><%= error %></p>
         <% } %>

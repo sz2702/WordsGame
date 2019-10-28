@@ -110,6 +110,7 @@ function getRandomWords() {
 app.post('/', function (req, res) {
   request(options_list[0], function (err, response, body) {
     let answer = req.body.choice;
+    console.log("My answer was: " + answer)
 
     if(err){
       console.log(err)
