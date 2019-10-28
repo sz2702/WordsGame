@@ -11,8 +11,8 @@
     <div class="container">
       <fieldset>
         <form action="/" method="post">
-          <!--<input name="city" type="text" class="ghost-input" placeholder="Enter a City" required>
-          <input type="submit" class="ghost-button" value="Get Weather">-->
+          <input name="choice" type="text" class="ghost-input" placeholder="answer (1-4)" required>
+          <input type="submit" class="ghost-button" value="Submit">
         </form>
         <% if(randomWord1 !== null){ %>
         <p><%= randomWord1 %></p>
@@ -32,6 +32,11 @@
         <% if(error !== null){ %>
         <p><%= error %></p>
         <% } %>
+        <% if(answer !== null){ %>
+        <p><%= answer %></p>
+        <% } %>
+        <p>Try another problem: <a href="/">New Question</a>
+        </p>
       </fieldset>
     </div>
   </body>

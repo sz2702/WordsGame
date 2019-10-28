@@ -13,17 +13,22 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
 
+    let definitions;
+    let options_list;
+    let randomWords;
+    let randomIndex;
+    let correct_or_not;
 
 app.get('/', function (req, res) {
-  let randomWords = getRandomWords();
-  let definitions = {};
-
+    randomWords = getRandomWords();
+    definitions = {};
+    options_list = [];
   let urls = ["https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[0],
               "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[1],
               "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[2],
               "https://od-api.oxforddictionaries.com:443/api/v2/entries/" + language + "/" + randomWords[3]
              ];
-   options_list = []
+
 
    for (i in urls) {
      let new_option = {
@@ -44,6 +49,7 @@ app.get('/', function (req, res) {
           res.render('index', {
             error: 'Error, please try again get' + err,
             randomWord1: null,
+            answer: null,
             wordDefinition1: null,
             wordDefinition2: null,
             wordDefinition3: null,
@@ -58,12 +64,16 @@ app.get('/', function (req, res) {
 
           console.log(completed_requests + " out of " + urls.length)
 
+          randomIndex = _.sample([0,1,2,3]);
+
           if (completed_requests == urls.length) {
             console.log('randomWords' + randomWords);
             console.log("get request render:");
+            console.log("get random index: "+ randomIndex);
             res.render('index', {
                 error: null,
-                randomWord1: randomWords[0],
+                answer: null,
+                randomWord1: randomWords[randomIndex],
                 wordDefinition1: definitions[randomWords[0]],
                 wordDefinition2: definitions[randomWords[1]],
                 wordDefinition3: definitions[randomWords[2]],
@@ -74,28 +84,6 @@ app.get('/', function (req, res) {
       });
 
 };
-  // request(options2, function (err, response, body) {
-
-  //   if(err){
-  //     res.render('index', {
-  //       error: 'Error, please try again get' + err,
-  //       randomWord2: null,
-  //       wordDefinition2: null,
-  //     });
-  //   } else {
-  //     let responseBody = JSON.parse(body)
-  //     console.log(responseBody)
-  //     let wordDefinition2 = "2nd" + responseBody.results[0].lexicalEntries[0].entries[0].senses[0].definitions
-  //     console.log(randomWords[1] + ": " + wordDefinition2)
-
-  //     res.render('index', {
-  //       error: null,
-  //       randomWord2: randomWords2,
-  //       wordDefinition2: wordDefinition2,
-  //    });
-  //   }
-  // });
-
 
 })
 
@@ -120,42 +108,43 @@ function getRandomWords() {
 }
 
 app.post('/', function (req, res) {
-  //let city = req.body.city;
-  //let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`
-
   request(options_list[0], function (err, response, body) {
+    let answer = req.body.choice;
 
     if(err){
       console.log(err)
       res.render('index', {
       	error: 'Error, please try again post 1' + err,
       	randomWord1: null,
+      	wordDefinition1: null,
+        wordDefinition2: null,
+        wordDefinition3: null,
+        wordDefinition4: null,
+        answer: null,
       });
     } else {
-      let weather = JSON.parse(body)
-      if(weather.main == undefined){
-        res.render('index', {
-        	error: 'Error, please try again post 2',
-        	randomWord1: null,
 
-        });
-      } else {
         console.log("post request render:");
+        console.log("post random index: "+ randomIndex);
+        if(answer == randomIndex) {
+          correct_or_not = "Correct";
+        } else {
+          correct_or_not = "Incorrect, try again";
+        }
 
         res.render('index', {
         	error: null,
-        	randomWord1: randomWords[0],
-            wordDefinition1: definitions[0],
-            wordDefinition2: definitions[1],
-            wordDefinition3: definitions[2],
-            wordDefinition4: definitions[3],
-
+        	randomWord1: randomWords[randomIndex],
+            wordDefinition1: definitions[randomWords[0]],
+            wordDefinition2: definitions[randomWords[1]],
+            wordDefinition3: definitions[randomWords[2]],
+            wordDefinition4: definitions[randomWords[3]],
+            answer: correct_or_not,
         });
       }
     }
-  });
+  )})
 
-})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
