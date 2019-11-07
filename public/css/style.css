@@ -1,0 +1,59 @@
+body {
+	background-color: #ffffff 
+  
+  
+  /*background-image: url("https://student-energy.s3.amazonaws.com/assets/662/Renewable%20Energy.jpg");
+	*/
+  font-size: 100%;
+}
+
+#outer-container {
+	left: 30%;
+	right: 30%;
+	width: 40%;
+}
+
+.container {
+	background-color: wheat;
+	width: 100%;
+	position: relative; 
+	/*left: 30%;*/
+
+}
+
+#inner-container {
+
+}
+
+.images {
+  background-color: #seashell ;
+  width: 100%
+
+}
+
+
+#solar {
+	position: relative;
+    left: 30%;
+    right: 30%;
+    width: 40%;
+}
+
+#turbine {
+    position: relative;
+    left: 30%;
+    right: 30%;
+    width: 40%;
+}
+
+#correct {
+	background-color: #40ff00 
+}
+
+#incorrect {
+	background-color: #ff0000
+}
+
+
+
+
